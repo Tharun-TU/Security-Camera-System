@@ -1,0 +1,9 @@
+from abc import ABC, abstractmethod
+
+class BaseDetector(ABC):
+    @abstractmethod
+    def detect(self, frame):
+        """
+        Process the frame and return detections.
+        """
+        pass
