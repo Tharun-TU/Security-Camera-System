@@ -45,3 +45,38 @@ class FireDetector(BaseDetector):
                 })
         
         return detections
+
+    def filter_detections(self, fire_detections, person_detections):
+        """
+        Filter out fire detections that are likely false positives (e.g., orange shirt).
+        Logic: If fire bbox is inside a person bbox, ignore it.
+        """
+        filtered = []
+        for fire in fire_detections:
+            fx1, fy1, fx2, fy2 = fire['bbox']
+            fire_area = (fx2 - fx1) * (fy2 - fy1)
+            is_false_positive = False
+            
+            for person in person_detections:
+                if person['class_id'] != 0: # 0 is person
+                    continue
+                
+                px1, py1, px2, py2 = person['bbox']
+                
+                # Check for overlap
+                ox1 = max(fx1, px1)
+                oy1 = max(fy1, py1)
+                ox2 = min(fx2, px2)
+                oy2 = min(fy2, py2)
+                
+                if ox1 < ox2 and oy1 < oy2:
+                    overlap_area = (ox2 - ox1) * (oy2 - oy1)
+                    # If > 50% of the "fire" is inside a "person", it's likely a shirt
+                    if overlap_area > 0.5 * fire_area:
+                        is_false_positive = True
+                        break
+            
+            if not is_false_positive:
+                filtered.append(fire)
+                
+        return filtered

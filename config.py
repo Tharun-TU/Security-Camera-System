@@ -17,10 +17,10 @@ FPS = 30
 # 0: person
 # 43: knife
 # 76: scissors (proxy for weapon)
-YOLO_MODEL_NAME = "yolov8n.pt"  # Will automatically download if not present
+YOLO_MODEL_NAME = "yolov8m.pt"  # Upgraded to Medium model for better accuracy
 
 # Detection Thresholds
-CONFIDENCE_THRESHOLD = 0.5
+CONFIDENCE_THRESHOLD = 0.6 # Increased for fewer false positives
 IOU_THRESHOLD = 0.45
 
 # Alert Configuration

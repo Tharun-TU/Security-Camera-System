@@ -49,6 +49,11 @@ def main():
         # 2. Fire Detection
         fire_detections = fire_detector.detect(frame)
         
+        # Filter Fire Detections (Remove false positives inside people)
+        # We pass only PERSON detections (class_id 0) for filtering
+        person_detections = [d for d in obj_detections if d['class_id'] == 0]
+        fire_detections = fire_detector.filter_detections(fire_detections, person_detections)
+        
         # 3. Activity Analysis
         # Update history with object detections that have IDs
         tracked_objects = [d for d in obj_detections if "track_id" in d]
